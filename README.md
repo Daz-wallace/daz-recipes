@@ -1,2 +1,2 @@
 # daz-recipes
-Contributing recipes back to the hive mind
+Contributing recipes back to the hive mind - https://dazwallace.wordpress.com 
