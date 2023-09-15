@@ -1,0 +1,19 @@
+Comment: Download regula from https://github.com/fugue/regula/
+   #  ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.regula
+MinimumVersion: '2.3'
+
+Input:
+  NAME: regula
+  ARCHITECTURE: "x86_64"
+  # ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: fugue/regula
+    asset_regex: 'regula_[0-9]+.[0-9]+.[0-9]+_macOS_%ARCHITECTURE%.tar.gz'
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

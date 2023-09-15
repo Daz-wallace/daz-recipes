@@ -1,0 +1,45 @@
+Comment: Create a package to deploy OxygenXML
+Identifier: com.github.daz-recipes.pkg.OxygenXML
+ParentRecipe: com.github.daz-recipes.download.OxygenXML
+MinimumVersion: '2.3'
+
+Input:
+  NAME: OxygenXML
+  PKG_ID: ro.sync.exml.Oxygen
+  
+Process:
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         Applications: "0775"
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%pathname%/Oxygen XML Editor'
+    destination_path: '%pkgroot%/Applications/Oxygen XML Editor'
+    overwrite: true
+
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%pathname%/Oxygen XML Editor/Oxygen XML Editor.app/Contents/Info.plist'
+    plist_version_key: CFBundleVersion
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request:
+        chown:
+          - group: admin
+            mode: "0775"
+            path: 'Applications'
+            user: root
+        pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+        pkgname: '%NAME%-%version%'
+        pkgtype: flat
+        id: '%PKG_ID%'
+        version: '%version%'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+        - '%RECIPE_CACHE_DIR%/%NAME%'

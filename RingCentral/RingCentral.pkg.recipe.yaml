@@ -1,0 +1,45 @@
+Comment: Create a package to deploy RingCentral
+  # Download URL should be:
+  # - "https://app.ringcentral.com/download/RingCentral.pkg" for Intel, or
+  # - "https://app.ringcentral.com/download/RingCentral-arm.pkg" for ARM 
+  # PKG_ARCH should be set to "Intel" for intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.RingCentral
+ParentRecipe: com.github.daz-recipes.download.RingCentral
+MinimumVersion: '2.3'
+
+Input:
+  NAME: RingCentral
+  DOWNLOAD_URL: "https://app.ringcentral.com/download/RingCentral.pkg"
+  # Download URL should be:
+  # - "https://app.ringcentral.com/download/RingCentral.pkg" for Intel, or
+  # - "https://app.ringcentral.com/download/RingCentral-arm.pkg" for ARM 
+  PKG_ARCH: Intel
+  # PKG_ARCH should be set to "Intel" for intel, or "ARM" for Apple Silicon
+
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/expanded'
+    flat_pkg_path: '%pathname%'
+
+- Processor: PkgPayloadUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/%NAME%/'
+    pkg_payload_path: '%RECIPE_CACHE_DIR%/expanded/com.ringcentral.glip.pkg/Payload'
+
+- Processor: PlistReader
+  Arguments:
+    info_path: '%RECIPE_CACHE_DIR%/%NAME%/RingCentral.app/Contents/Info.plist'
+    plist_keys: 
+        CFBundleVersion: version
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+    - '%RECIPE_CACHE_DIR%/expanded'
+    - '%RECIPE_CACHE_DIR%/%NAME%'
+    
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg'

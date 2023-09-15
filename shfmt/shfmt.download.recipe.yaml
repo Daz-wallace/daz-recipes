@@ -1,0 +1,19 @@
+Comment: Download shfmt from https://github.com/mvdan/sh
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.shfmt
+MinimumVersion: '2.3'
+
+Input:
+  NAME: shfmt
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: mvdan/sh
+    asset_regex: "shfmt_v.*._darwin_%ARCHITECTURE%"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

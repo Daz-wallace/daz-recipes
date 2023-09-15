@@ -1,0 +1,56 @@
+Comment: Package snyk to /usr/local/bin/snyk
+Identifier: com.github.daz-recipes.pkg.snyk
+ParentRecipe: com.github.daz-recipes.download.snyk
+MinimumVersion: '2.3'
+
+Input:
+  NAME: snyk
+  PKG_ID: io.snyk.snyk
+  
+Process:
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "v"
+    version: '%match%'
+    index: 1
+    
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "/snyk-macos"
+    version: '%version%'
+    index: 0
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/snyk-macos'
+    destination_path: '%pkgroot%/root/usr/local/bin/snyk'
+    overwrite: true
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'
+

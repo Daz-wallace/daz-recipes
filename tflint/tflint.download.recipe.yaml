@@ -1,0 +1,19 @@
+Comment: Download tflint from https://github.com/terraform-linters/tflint
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.tflint
+MinimumVersion: '2.3'
+
+Input:
+  NAME: tflint
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: terraform-linters/tflint
+    asset_regex: "tflint_darwin_%ARCHITECTURE%.zip"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

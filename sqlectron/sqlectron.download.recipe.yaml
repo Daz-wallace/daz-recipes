@@ -1,0 +1,21 @@
+Comment: Download sqlectron from https://github.com/sqlectron/sqlectron-gui
+Identifier: com.github.daz-recipes.download.sqlectron
+MinimumVersion: '2.3'
+
+Input:
+  NAME: sqlectron
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: sqlectron/sqlectron-gui
+    asset_regex: "sqlectron.*..dmg"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: "%pathname%/sqlectron.app"
+    requirement: 'identifier "org.sqlectron.gui" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "636PQWRU63"'

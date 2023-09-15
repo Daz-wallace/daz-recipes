@@ -1,0 +1,18 @@
+Comment: Package ReactNativeDebugger
+Identifier: com.github.daz-recipes.pkg.ReactNativeDebugger
+ParentRecipe: com.github.daz-recipes.download.ReactNativeDebugger
+MinimumVersion: '2.3'
+
+Input:
+  NAME: React Native Debugger
+  
+Process:
+- Processor: AppPkgCreator
+  Arguments:
+        app_path: '%RECIPE_CACHE_DIR%/unpack/React Native Debugger.app'
+        pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/unpack'

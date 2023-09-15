@@ -1,0 +1,43 @@
+Comment: Get the right version and rename the package for sfdx
+Identifier: com.github.daz-recipes.pkg.sfdx
+ParentRecipe: com.github.daz-recipes.download.sfdx
+MinimumVersion: '2.3'
+
+Input:
+  NAME: sfdx
+  
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/expanded'
+    flat_pkg_path: '%pathname%'
+
+- Processor: com.github.autopkg.novaksam-recipes.Processors/PackageInfoReader
+  Arguments:
+    packageinfo_path: '%RECIPE_CACHE_DIR%/expanded/PackageInfo'
+
+- Processor: com.github.autopkg.novaksam-recipes.Processors/PackageInfoReader
+  Arguments:
+    packageinfo_path: '%RECIPE_CACHE_DIR%/expanded/PackageInfo'
+        
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%RECIPE_CACHE_DIR%/downloads/sfdx.pkg'
+    pkg_path: '%RECIPE_CACHE_DIR%/sfdx-%pkginfo_version%.pkg'
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "sfdx-"
+    version: '%pkg_path%'
+    index: 1
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: ".pkg"
+    version: '%version%'
+    index: 0
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/expanded'

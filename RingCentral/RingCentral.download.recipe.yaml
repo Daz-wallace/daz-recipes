@@ -1,0 +1,28 @@
+Comment: Download RingCentral from https://www.ringcentral.com/gb/en/download.html
+  # Download URL should be:
+  # - "https://app.ringcentral.com/download/RingCentral.pkg" for Intel, or
+  # - "https://app.ringcentral.com/download/RingCentral-arm.pkg" for ARM
+Identifier: com.github.daz-recipes.download.RingCentral
+MinimumVersion: '2.3'
+
+Input:
+  NAME: RingCentral
+  DOWNLOAD_URL: "https://app.ringcentral.com/download/RingCentral.pkg"
+  # Download URL should be:
+  # - "https://app.ringcentral.com/download/RingCentral.pkg" for Intel, or
+  # - "https://app.ringcentral.com/download/RingCentral-arm.pkg" for ARM
+    
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: "%DOWNLOAD_URL%"
+        
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: "%pathname%"
+    expected_authority_names: 
+      - "Developer ID Installer: RingCentral, Inc. (M932RC5J66)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

@@ -1,0 +1,14 @@
+Comment: Download sfdx from https://developer.salesforce.com/tools/sfdxcli
+Identifier: com.github.daz-recipes.download.sfdx
+MinimumVersion: '2.3'
+
+Input:
+  NAME: sfdx
+  DOWNLOAD_URL: https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx.pkg
+  
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%'
+  
+- Processor: EndOfCheckPhase

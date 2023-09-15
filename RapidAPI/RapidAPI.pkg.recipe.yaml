@@ -1,0 +1,25 @@
+Comment: Work out the version number and package the installer for RapidAPI
+Identifier: com.github.daz-recipes.pkg.RapidAPI
+ParentRecipe: com.github.daz-recipes.download.RapidAPI
+MinimumVersion: '2.3'
+
+Input:
+  NAME: RapidAPI
+  BUNDLE_ID: com.luckymarmot.RapidAPI
+  
+Process:
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%RECIPE_CACHE_DIR%/%NAME%/Applications/RapidAPI.app/Contents/Info.plist'
+    plist_version_key: 'CFBundleShortVersionString'
+
+- Processor: AppPkgCreator
+  Arguments:
+    app_path: '%RECIPE_CACHE_DIR%/%NAME%/Applications/RapidAPI.app'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    bundleid: '%BUNDLE_ID%'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/%NAME%'

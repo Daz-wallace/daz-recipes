@@ -1,0 +1,32 @@
+Comment: Download Prezi Video using the sparkle framework
+Identifier: com.github.daz-recipes.download.PreziVideo
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Prezi Video
+
+Process:
+- Processor: SparkleUpdateInfoProvider
+  Arguments:
+    appcast_url: "https://s3.amazonaws.com/prezidesktop/assets/mac/prezi-video/updates/prezi-video.xml"
+
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%-%version%.zip'
+
+- Processor: EndOfCheckPhase
+
+- Processor: Unarchiver
+  Arguments:
+    input_path: '%pathname%'
+    destination_path: "%RECIPE_CACHE_DIR%/unpack"
+    purge_destination: true
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/unpack/Prezi_Video.pkg'
+    expected_authority_names: 
+      - "Developer ID Installer: Prezi Inc. (G3FPFFW4NC)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"
+      

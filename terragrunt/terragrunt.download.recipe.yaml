@@ -1,0 +1,19 @@
+Comment: Download terragrunt from https://github.com/gruntwork-io/terragrunt
+   # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.terragrunt
+MinimumVersion: '2.3'
+
+Input:
+  NAME: terragrunt
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: gruntwork-io/terragrunt
+    asset_regex: "terragrunt_darwin_%ARCHITECTURE%"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

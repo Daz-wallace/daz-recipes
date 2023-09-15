@@ -1,0 +1,40 @@
+Comment: Builds a package for SeeQR
+Identifier: com.github.daz-recipes.pkg.SeeQR
+ParentRecipe: com.github.daz-recipes.download.SeeQR
+MinimumVersion: '2.3'
+
+Input:
+  NAME: SeeQR
+  PKG_ID: com.github.open-source-labs.seeqr
+  
+Process:
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%pathname%/SeeQR.app/Contents/Info.plist'
+    plist_version_key: 'CFBundleShortVersionString'
+    
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         Applications: "0775"
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%pathname%/%NAME%.app'
+    destination_path: '%pkgroot%/Applications/%NAME%.app'
+    overwrite: true
+    
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: admin
+            mode: "0775"
+            path: 'Applications'
+            user: root    
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%"
+        version: "%version%"

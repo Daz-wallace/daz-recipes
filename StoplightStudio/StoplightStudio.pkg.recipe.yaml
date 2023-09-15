@@ -1,0 +1,28 @@
+Comment: Package Spotlight Studio from https://github.com/stoplightio/studio
+      # ARCHITECTURE should be set to "" for Intel, or "-arm64" for Apple Silicon
+      # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon 
+Identifier: com.github.daz-recipes.pkg.StoplightStudio
+ParentRecipe: com.github.daz-recipes.download.StoplightStudio
+MinimumVersion: '2.3'
+
+Input:
+   NAME: Stoplight Studio
+   ARCHITECTURE: ""
+   # ARCHITECTURE should be set to "" for Intel, or "-arm64" for Apple Silicon 
+   PKG_ARCH: "Intel"
+   # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon  
+  
+Process:
+- Processor: AppDmgVersioner
+  Arguments:
+    dmg_path: "%pathname%"
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "-"
+    version: '%version%'
+    index: 0
+      
+- Processor: AppPkgCreator
+  Arguments:
+    pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg"

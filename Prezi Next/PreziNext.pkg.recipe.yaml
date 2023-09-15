@@ -1,0 +1,12 @@
+Comment: Create a package to deploy Prezi Next to /Applications/
+Identifier: com.github.daz-recipes.pkg.PreziNext
+ParentRecipe: com.github.daz-recipes.download.PreziNext
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Prezi Next
+  
+Process:
+- Processor: AppPkgCreator
+  Arguments:
+    bundleid: com.prezi.prezinext

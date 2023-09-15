@@ -1,0 +1,19 @@
+Comment: Download SeeQR from https://github.com/open-source-labs/SeeQR
+Identifier: com.github.daz-recipes.download.SeeQR
+MinimumVersion: '2.3'
+
+Input:
+  NAME: SeeQR
+  GITHUB_REPO: open-source-labs/SeeQR
+  
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: '%GITHUB_REPO%'
+    asset_regex: 'SeeQR-[\S]+\.dmg'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%-%version%.dmg'
+    
+- Processor: EndOfCheckPhase

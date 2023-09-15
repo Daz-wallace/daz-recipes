@@ -1,0 +1,27 @@
+Comment: Download Symphony from https://symphony.com/resource/downloads/
+Identifier: com.github.daz-recipes.download.Symphony
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Symphony Desktop
+  DOWNLOAD_URL: https://symphony.com/resource/downloads/
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '(https://resources.symphony.com/SymphonyDesktopApplication-macOS-[0-9]+.[0-9]+.[0-9]+.*.pkg)'
+    url: "%DOWNLOAD_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+        
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Developer ID Installer: Symphony Communication Services LLC (BUX8SV4LQA)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

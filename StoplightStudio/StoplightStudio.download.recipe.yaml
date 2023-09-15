@@ -1,0 +1,28 @@
+Comment: Download Spotlight Studio from https://github.com/stoplightio/studio
+      # ARCHITECTURE should be set to "" for Intel, or "-arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.StoplightStudio
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Stoplight Studio
+  ARCHITECTURE: ""
+  # ARCHITECTURE should be set to "" for Intel, or "-arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: stoplightio/studio
+    asset_regex: "stoplight-studio-mac%ARCHITECTURE%.dmg"
+
+- Processor: URLDownloader
+
+- Processor: StopProcessingIf
+  Arguments:
+    predicate: 'download_changed == FALSE'
+    
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: "%pathname%/Stoplight Studio.app"
+    requirement: 'identifier "com.stoplight.studio" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "892VTWTHWB"'
+
+- Processor: EndOfCheckPhase

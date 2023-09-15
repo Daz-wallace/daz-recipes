@@ -1,0 +1,19 @@
+Comment: Download terraform-docs from https://github.com/terraform-docs/terraform-docs
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.terraform-docs
+MinimumVersion: '2.3'
+
+Input:
+  NAME: terraform-docs
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: terraform-docs/terraform-docs
+    asset_regex: "terraform-docs-v[0-9]+.[0-9]+.[0-9]+-darwin-%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

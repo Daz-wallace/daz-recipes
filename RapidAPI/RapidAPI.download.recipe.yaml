@@ -1,0 +1,26 @@
+Comment: Download RapidAPI (formally Paw) from https://paw.cloud
+Identifier: com.github.daz-recipes.download.RapidAPI
+MinimumVersion: '2.3'
+
+Input:
+  NAME: RapidAPI
+  DOWNLOAD_URL: https://paw.cloud/download
+
+Process:
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%.zip'
+    url: '%DOWNLOAD_URL%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: Unarchiver
+  Arguments:
+    archive_path: '%pathname%'
+    destination_path: '%RECIPE_CACHE_DIR%/%NAME%/Applications'
+    purge_destination: true
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/%NAME%/Applications/RapidAPI.app'
+    requirement: 'anchor apple generic and identifier "com.luckymarmot.Paw" and (certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "84599RL58A")'      

@@ -1,0 +1,10 @@
+Comment: Create a package to deploy sqlectron
+Identifier: com.github.daz-recipess.pkg.sqlectron
+ParentRecipe: com.github.daz-recipes.download.sqlectron
+MinimumVersion: '2.3'
+
+Input:
+  NAME: sqlectron
+  
+Process:
+- Processor: AppPkgCreator

@@ -1,0 +1,20 @@
+Comment: Download snyk from https://static.snyk.io/cli/latest/release.json
+Identifier: com.github.daz-recipes.download.snyk
+MinimumVersion: '2.3'
+
+Input:
+  NAME: snyk
+  CHECK_URL: https://static.snyk.io/cli/latest/release.json
+  SEARCH_TERMS: '\"url\": \"(https://static.snyk.io/cli/v[0-9]+.[0-9]+.[0-9]+/snyk-macos)\"'
+
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '%SEARCH_TERMS%'
+    url: '%CHECK_URL%'
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+    
+- Processor: EndOfCheckPhase

@@ -1,0 +1,48 @@
+Comment: Package creation for Packer. 
+      # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+      # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.Packer
+ParentRecipe: com.github.daz-recipes.download.Packer
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Packer
+  PKG_ID: com.hashicorp.Packer
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+    
+Process:
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+        usr: "0755"
+        usr/local: "0775"
+        usr/local/bin: "0775"
+    pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'    
+
+- Processor: Unarchiver
+  Arguments:
+    archive_path: '%pathname%'
+    destination_path: '%pkgroot%/usr/local/bin'  
+    purge_destination: True 
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+      chown:
+         - group: admin
+           mode: "0775"
+           path: usr
+           user: root       
+      id: "%PKG_ID%"
+      options: purge_ds_store
+      pkgname: "%NAME%-%version%-%PKG_ARCH%"
+      pkgdir: "%RECIPE_CACHE_DIR%"
+      version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/pkgroot'

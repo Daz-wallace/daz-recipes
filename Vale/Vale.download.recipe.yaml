@@ -1,0 +1,19 @@
+Comment: Download Vale from https://github.com/errata-ai/vale
+    # ARCHITECTURE should be set to "64-bit" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.vale
+MinimumVersion: '2.3'
+
+Input:
+  NAME: vale
+  ARCHITECTURE: "64-bit"
+  # ARCHITECTURE should be set to "64-bit" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: errata-ai/vale
+    asset_regex: "vale_.*._macOS_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

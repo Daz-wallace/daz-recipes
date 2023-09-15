@@ -1,0 +1,27 @@
+Comment: Download ReactNativeDebugger from https://github.com/jhen0409/react-native-debugger
+Identifier: com.github.daz-recipes.download.ReactNativeDebugger
+MinimumVersion: '2.3'
+
+Input:
+  NAME: React Native Debugger
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: jhen0409/react-native-debugger
+    asset_regex: "rn-debugger-macos-universal.zip"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase
+
+- Processor: Unarchiver
+  Arguments:
+    archive_path: '%pathname%'
+    destination_path: '%RECIPE_CACHE_DIR%/unpack'
+    purge_destination: true
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/unpack/React Native Debugger.app'
+    requirement: 'identifier "com.electron.react-native-debugger" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = Q5AB6DLD5L'

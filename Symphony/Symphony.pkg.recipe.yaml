@@ -1,0 +1,35 @@
+Comment: Create a package to install Symphony
+Identifier: com.github.daz-recipes.pkg.Symphony
+ParentRecipe: com.github.daz-recipes.download.Symphony
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Symphony Desktop
+  VERSION_TYPE: CFBundleShortVersionString
+ 
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/downloads/unpack'
+    flat_pkg_path: '%pathname%'
+    
+- Processor: PkgPayloadUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/downloads/payload'
+    pkg_payload_path: '%RECIPE_CACHE_DIR%/downloads/unpack/Symphony.pkg/Payload'
+
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%RECIPE_CACHE_DIR%/downloads/payload/Symphony.app/Contents/Info.plist'
+    plist_version_key: '%VERSION_TYPE%'
+    
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+    
+- Processor: PathDeleter
+  Arguments:
+    path_list:
+        - '%RECIPE_CACHE_DIR%/downloads/unpack'
+        - '%RECIPE_CACHE_DIR%/downloads/payload'

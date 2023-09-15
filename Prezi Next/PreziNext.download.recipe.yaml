@@ -1,0 +1,23 @@
+Comment: Download Prezi Next using the sparkle framework
+Identifier: com.github.daz-recipes.download.PreziNext
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Prezi Next
+
+
+Process:
+- Processor: SparkleUpdateInfoProvider
+  Arguments:
+    appcast_url: "https://s3.amazonaws.com/prezidesktop/assets/mac/pitch/updates/prezi-business.xml"
+
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%-%version%.dmg'
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%/Prezi Next.app'
+    requirement: identifier "com.prezi.pitch.desktop" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = G3FPFFW4NC

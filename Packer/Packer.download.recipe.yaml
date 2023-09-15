@@ -1,0 +1,37 @@
+Comment: Download for Packer.
+      # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.Packer
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Packer
+  PRODUCT: packer
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  
+Process:
+- Processor: io.github.hjuutilainen.SharedProcessors/HashiCorpURLProvider
+  Arguments:
+    arch: "%ARCHITECTURE%"
+    project_name: "%PRODUCT%"   
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase
+
+- Processor: Unarchiver
+  Arguments:
+    archive_path: '%pathname%'
+    destination_path: '%RECIPE_CACHE_DIR%/unpack'
+    purge_destination: true
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/unpack/packer'
+    requirement: 'identifier packer and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = D38WU7D763'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/unpack'
+      

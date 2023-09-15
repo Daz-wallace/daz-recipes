@@ -1,0 +1,20 @@
+Comment: Download zoc8 from https://www.emtec.com/download.html#zocfiles
+Identifier: com.github.daz-recipes.download.zoc8
+MinimumVersion: '2.3'
+
+Input:
+  NAME: zoc8
+  CHECK_URL: "https://www.emtec.com/download.html?what=zoc#zocfiles"
+  DOWNLOAD_URL: "https://www.emtec.com/downloads/zoc"
+    
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: 'a href=\"\./cgi-local/download\.php\?what=ZOC8%20\(macOS\)&amp;link=zoc/(zoc[0-9]+\.dmg)&amp;ext=html'
+    url: "%CHECK_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%/%match%'
+    
+- Processor: EndOfCheckPhase

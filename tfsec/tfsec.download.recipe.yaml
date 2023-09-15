@@ -1,0 +1,19 @@
+Comment: Download tfsec from https://github.com/aquasecurity/tfsec
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.tfsec
+MinimumVersion: '2.3'
+
+Input:
+  NAME: tfsec
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: aquasecurity/tfsec
+    asset_regex: "tfsec_[0-9]+.[0-9]+.[0-9]+_darwin_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

@@ -1,0 +1,20 @@
+Comment: Download terraform from https://releases.hashicorp.com/terraform/
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.terraform
+MinimumVersion: '2.3'
+
+Input:
+  NAME: terraform
+  PRODUCT: terraform
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: io.github.hjuutilainen.SharedProcessors/HashiCorpURLProvider
+  Arguments:
+    arch: '%ARCHITECTURE%'
+    project_name: '%PRODUCT%'
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

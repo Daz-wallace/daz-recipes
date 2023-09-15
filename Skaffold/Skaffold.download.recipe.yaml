@@ -1,0 +1,22 @@
+Comment: Download Skaffold from https://github.com/GoogleContainerTools/skaffold
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.Skaffold
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Skaffold
+  GITHUB_REPO: GoogleContainerTools/skaffold
+  ARCHITECTURE: "arm64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: '%GITHUB_REPO%'
+    asset_regex: 'skaffold-darwin-%ARCHITECTURE%'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: 'skaffold'
+    
+- Processor: EndOfCheckPhase
