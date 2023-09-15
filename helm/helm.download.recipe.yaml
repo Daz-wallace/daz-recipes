@@ -1,0 +1,20 @@
+Comment: Download helm from https://github.com/helm/helm/releases
+   #  ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.helm
+MinimumVersion: '2.3'
+
+Input:
+  NAME: helm
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: helm/helm
+
+- Processor: URLDownloader
+  Arguments:
+    url: "https://get.helm.sh/helm-v%version%-darwin-%ARCHITECTURE%.tar.gz"
+
+- Processor: EndOfCheckPhase

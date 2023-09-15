@@ -1,0 +1,52 @@
+Comment: Builds a package for mat
+   # ARCHITECTURE should be set to "x86_64" for Intel, or "aarch64" for Apple Silicon
+   # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.mat
+ParentRecipe: com.github.daz-recipes.download.mat
+MinimumVersion: '2.3'
+
+Input:
+  NAME: mat
+  ARCHITECTURE: x86_64
+  # ARCHITECTURE should be set to "x86_64" for Intel, or "aarch64" for Apple Silicon
+  PKG_ARCH: Intel
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+  PKG_ID: org.eclipse.mat.ui.rcp.MemoryAnalyzer
+
+    
+Process:
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%RECIPE_CACHE_DIR%/downloads/%NAME%.dmg/mat.app/Contents/Info.plist'
+    plist_version_key: 'CFBundleShortVersionString'
+    
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         Applications: "0775"
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/%NAME%.dmg/%NAME%.app'
+    destination_path: '%pkgroot%/Applications/%NAME%.app'
+    overwrite: true
+    
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: admin
+            mode: "0775"
+            path: 'Applications'
+            user: root    
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%-%PKG_ARCH%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/%NAME%'

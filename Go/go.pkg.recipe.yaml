@@ -1,0 +1,31 @@
+Comment: Create a package to install go
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+    # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.go
+ParentRecipe: com.github.daz-recipes.download.go
+MinimumVersion: '2.3'
+
+Input:
+  NAME: go
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+  
+Process:
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "go"
+    version: '%match%'
+    index: 1
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: ".darwin-%ARCHITECTURE%.pkg"
+    version: '%version%'
+    index: 0
+    
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg'

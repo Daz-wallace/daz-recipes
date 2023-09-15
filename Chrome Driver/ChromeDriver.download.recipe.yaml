@@ -1,0 +1,28 @@
+Comment: Download ChromeDriver from https://chromedriver.chromium.org/home
+    # ARCHITECTURE should be set to "mac64" for Intel, or "mac64_m1" for Apple Silicon
+Identifier: com.github.daz-recipes.download.ChromeDriver
+MinimumVersion: '2.3'
+
+Input:
+  NAME: ChromeDriver
+  CHECK_URL: https://chromedriver.storage.googleapis.com/LATEST_RELEASE
+  DOWNLOAD_URL: https://chromedriver.storage.googleapis.com
+  ARCHITECTURE: "mac64"
+  # ARCHITECTURE should be set to "mac64" for Intel, or "mac_arm64" for Apple Silicon  
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '[0-9]+.[0-9]+.[0-9]+.[0-9]+'
+    url: "%CHECK_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%/%match%/chromedriver_%ARCHITECTURE%.zip'
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    version: '%match%'
+    index: 0
+        
+- Processor: EndOfCheckPhase

@@ -1,0 +1,29 @@
+Comment: Download the macOS Installer App Installer from 
+    https://mrmacintosh.com/macos-sonoma-full-installer-database-download-directly-from-apple/
+Identifier: com.github.daz-recipes.download.InstallmacOSSonoma
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Install macOS Sonoma
+  CHECK_URL: "https://mrmacintosh.com/macos-sonoma-full-installer-database-download-directly-from-apple/"
+  
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    url: '%CHECK_URL%'
+    re_pattern: "https://swcdn.apple.com/content/downloads/.*/InstallAssistant.pkg"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Software Update"
+      - "Apple Software Update Certification Authority"
+      - "Apple Root CA"
+
+- Processor: EndOfCheckPhase

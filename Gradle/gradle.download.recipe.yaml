@@ -1,0 +1,19 @@
+Comment: Download gradle from https://gradle.org/install/
+Identifier: com.github.daz-recipes.download.gradle
+MinimumVersion: '2.3'
+
+Input:
+  NAME: gradle
+  DOWNLOAD_URL: https://gradle.org/install/
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: 'href="(https://services.gradle.org/distributions/gradle-.*.-bin.zip)"'
+    url: "%DOWNLOAD_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+    
+- Processor: EndOfCheckPhase

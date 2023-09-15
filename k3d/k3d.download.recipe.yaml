@@ -1,0 +1,19 @@
+Comment: Download k3d from https://github.com/k3d-io/k3d
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.k3d
+MinimumVersion: '2.3'
+
+Input:
+  NAME: k3d
+  ARCHITECTURE: "arm64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: k3d-io/k3d
+    asset_regex: "k3d-darwin-%ARCHITECTURE%"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

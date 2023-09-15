@@ -1,0 +1,15 @@
+Comment: Download Offset Explorer (formerly Kafka Tool) from 
+    https://www.kafkatool.com/download.html
+Identifier: com.github.daz-recipes.download.offsetexplorer
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Offset Explorer
+  DOWNLOAD_URL: "https://www.kafkatool.com/download2/offsetexplorer.dmg"
+  
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%'
+
+- Processor: EndOfCheckPhase

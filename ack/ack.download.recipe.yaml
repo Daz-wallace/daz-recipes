@@ -1,0 +1,25 @@
+Comment: Download ack from https://beyondgrep.com/install/
+Identifier: com.github.daz-recipes.download.ack
+MinimumVersion: '2.3'
+
+Input:
+  NAME: ack
+  DOWNLOAD_URL: https://beyondgrep.com/install/
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: (https://beyondgrep.com/ack-v.*.)"
+    url: "%DOWNLOAD_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "-v"
+    version: '%pathname%'
+    index: 1

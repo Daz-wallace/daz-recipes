@@ -1,0 +1,17 @@
+Comment: Download the latest version of frodo using 
+    https://github.com/rockcarver/frodo-cli/
+Identifier: com.github.daz-recipes.download.frodo
+MinimumVersion: '2.3'
+
+Input:
+  NAME: frodo
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: rockcarver/frodo-cli
+    asset_regex: "frodo-macos-.*.zip"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

@@ -1,0 +1,32 @@
+Comment: Download the latest version of NodeJS. 
+    # Use the DOWNLOAD_URL to point this to different version of NodeJS
+Identifier: com.github.daz-recipes.download.nodeJS
+MinimumVersion: '2.3'
+
+Input:
+    NAME: NodeJS
+    DOWNLOAD_URL: https://nodejs.org/dist/latest/
+    # Use the DOWNLOAD_URL to point this to different version of NodeJS
+    DOWNLOAD_PATTERN: 'node-v([0-9\.]+).pkg'
+
+Process:    
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '%DOWNLOAD_PATTERN%'
+    url: '%DOWNLOAD_URL%'
+    result_output_var_name: version
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%node-v%version%.pkg'
+
+- Processor: EndOfCheckPhase
+    
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names:
+      - "Developer ID Installer: Node.js Foundation (HX7739G8FX)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"
+    

@@ -1,0 +1,25 @@
+Comment: Download fzf from https://github.com/junegunn/fzf
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.fzf
+MinimumVersion: '2.3'
+
+Input:
+  NAME: shfmt
+  FZF_TMUX_URL: https://raw.githubusercontent.com/junegunn/fzf/master/bin/fzf-tmux
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: junegunn/fzf
+    asset_regex: "fzf-[0-9]+.[0-9]+.[0-9]+-darwin_%ARCHITECTURE%.zip"
+
+- Processor: URLDownloader
+
+- Processor: URLDownloader
+  Arguments:
+    url: "%FZF_TMUX_URL%"
+    filename: fzf-tmux
+
+- Processor: EndOfCheckPhase

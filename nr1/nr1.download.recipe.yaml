@@ -1,0 +1,23 @@
+Comment: Download NewRelic's nr1 from https://cli.nr-ext.net/installer.pkg
+Identifier: com.github.daz-recipes.download.nr1
+MinimumVersion: '2.3'
+
+Input:
+  NAME: nr1
+  DOWNLOAD_URL: https://cli.nr-ext.net/installer.pkg
+
+Process:
+- Processor: URLDownloader
+  Arguments:
+    input_path: '%pathname%/Logseq.app'
+    url: '%DOWNLOAD_URL%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Developer ID Installer: New Relic Inc (SU7SUNGZJP)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

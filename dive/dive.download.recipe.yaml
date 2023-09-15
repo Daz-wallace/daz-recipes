@@ -1,0 +1,19 @@
+Comment: Download dive from https://github.com/wagoodman/dive
+      # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.dive
+MinimumVersion: '2.3'
+
+Input:
+  NAME: dive
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: wagoodman/dive
+    asset_regex: "dive_.*._darwin_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

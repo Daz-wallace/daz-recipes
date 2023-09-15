@@ -1,0 +1,23 @@
+Comment: Download kubectl from https://dl.k8s.io/release/[version]/bin/darwin/amd64/kubectl
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.kubectl
+MinimumVersion: '2.3'
+
+Input:
+  NAME: kubectl
+  CHECK_URL: https://dl.k8s.io/release/stable.txt
+  DOWNLOAD_URL: https://dl.k8s.io/release
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: 'v.*.'
+    url: "%CHECK_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%/%match%/bin/darwin/%ARCHITECTURE%/%NAME%'
+    
+- Processor: EndOfCheckPhase

@@ -1,0 +1,73 @@
+Comment: Create a package to deploy Allure to /usr/local/bin/allure-version, then
+        symlink the allure binary to /usr/local/bin/allure
+Identifier: com.github.daz-recipes.pkg.allure2
+ParentRecipe: com.github.daz-recipes.download.allure2
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Allure 2
+  PKG_ID: com.github.allure-framework.allure2
+
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true 
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         scripts: "0755"
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/allure-%version%'
+    destination_path: '%pkgroot%/root/usr/local/bin/allure-%version%'
+    overwrite: true
+
+- Processor: FileCreator
+  Arguments:
+      file_path: "%pkgroot%/scripts/postinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/zsh
+        
+        # This script will create a symlink to link the Allure binary to
+        # /usr/local/bin/allure
+        
+        if [[ -a /usr/local/bin/allure ]]; then
+            /bin/rm /usr/local/bin/allure
+        fi
+        /bin/ln -s /usr/local/bin/%NAME%-%version%/bin/allure /usr/local/bin/allure
+        exit
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr/local/bin/allure-%version%'
+            user: root
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        scripts: "%RECIPE_CACHE_DIR%/%NAME%/scripts"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'
+      -  '%RECIPE_CACHE_DIR%/unpack'

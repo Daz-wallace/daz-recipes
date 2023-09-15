@@ -1,0 +1,25 @@
+Comment: Download Logi Options+ from https://www.logitech.com/en-gb/software/logi-options-plus.html
+Identifier: com.github.daz-recipes.download.LogiOptionsPlus
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Logi Options Plus
+  DOWNLOAD_URL: "https://download01.logi.com/web/ftp/pub/techsupport/optionsplus/logioptionsplus_installer.zip"
+
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%'
+
+- Processor: EndOfCheckPhase
+
+- Processor: Unarchiver
+  Arguments:
+    archive_path: '%pathname%'
+    destination_path: '%RECIPE_CACHE_DIR%/unpack'
+    purge_destination: true
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/unpack/logioptionsplus_installer.app'
+    requirement: 'identifier "com.logi.optionsplus.installer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = QED4VVPZWA'

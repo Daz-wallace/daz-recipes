@@ -1,0 +1,24 @@
+Comment: Download the GnuPG installer from 
+    https://sourceforge.net/projects/gpgosx/
+Identifier: com.github.daz-recipes.download.GnuPG
+MinimumVersion: '2.3'
+
+Input:
+  NAME: GnuPG
+  SOURCEFORGE_PROJECT_NAME: gpgosx
+  
+Process:
+- Processor: com.github.jessepeterson.munki.GrandPerspective/SourceForgeURLProvider
+  Arguments:
+    SOURCEFORGE_FILE_PATTERN: "GnuPG-.*.dmg"
+    SOURCEFORGE_PROJECT_NAME: "%SOURCEFORGE_PROJECT_NAME%"
+
+- Processor: URLDownloader
+  Arguments:
+    filename: '%NAME%.dmg'
+
+- Processor: StopProcessingIf
+  Arguments:
+    predicate: 'download_changed == FALSE'
+
+- Processor: EndOfCheckPhase

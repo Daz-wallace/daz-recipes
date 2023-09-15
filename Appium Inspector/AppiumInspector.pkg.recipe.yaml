@@ -1,0 +1,10 @@
+Comment: Create a package to deploy AppiumInspector
+Identifier: ccom.githubom.daz-recipes.pkg.AppiumInspector
+ParentRecipe: com.github.daz-recipes.download.AppiumInspector
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Appium Inspector
+  
+Process:
+- Processor: AppPkgCreator

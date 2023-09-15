@@ -1,0 +1,19 @@
+Comment: Download kustomize from https://github.com/kubernetes-sigs/kustomize
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.kustomize
+MinimumVersion: '2.3'
+
+Input:
+  NAME: kustomize
+  ARCHITECTURE: "arm64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: kubernetes-sigs/kustomize
+    asset_regex: "kustomize_v.*._darwin_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

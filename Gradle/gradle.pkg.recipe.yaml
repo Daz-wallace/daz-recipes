@@ -1,0 +1,88 @@
+Comment: Create a package to deploy gradle to /usr/local/bin/gradle-version, then
+    use a postinstall script to create a symlink
+Identifier: com.github.daz-recipes.pkg.gradle
+ParentRecipe: com.github.daz-recipes.download.gradle
+MinimumVersion: '2.3'
+
+Input:
+  NAME: gradle
+  PKG_ID: com.gradle.gradle
+  
+Process:
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "gradle-"
+    version: '%match%'
+    index: 1
+    
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "-bin.zip"
+    version: '%version%'
+    index: 0
+
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true 
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         scripts: "0755"
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/%NAME%-%version%'
+    destination_path: '%pkgroot%/root/usr/local/bin/%NAME%-%version%'
+    overwrite: true
+
+- Processor: FileCreator
+  Arguments:
+      file_path: "%pkgroot%/scripts/postinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/zsh
+        
+        # This script will create a symlink to link the gradle binary to
+        # /usr/local/bin/gradle
+        /bin/echo "Starting post-install script"
+        
+        if [[ -L /usr/local/bin/gradle ]]; then
+            /bin/echo "Previous symlink or install found, removing symlink..."
+            /bin/rm /usr/local/bin/gradle
+        fi
+        /bin/echo "Setting up Symlink from /usr/local/bin/%NAME%-%version%/bin/gradle to /usr/local/bin/gradle"
+        /bin/ln -s /usr/local/bin/%NAME%-%version%/bin/gradle /usr/local/bin/gradle
+        exit
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr/local/bin/gradle-%version%'
+            user: root
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        scripts: "%RECIPE_CACHE_DIR%/%NAME%/scripts"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'
+      -  '%RECIPE_CACHE_DIR%/unpack'

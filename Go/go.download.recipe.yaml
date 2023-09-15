@@ -1,0 +1,30 @@
+Comment: Download go from https://go.dev/dl/
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.go
+MinimumVersion: '2.3'
+
+Input:
+  NAME: go
+  DOWNLOAD_URL: https://go.dev/dl
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: "go.*.darwin-%ARCHITECTURE%.pkg"
+    url: "%DOWNLOAD_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%/%match%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Developer ID Installer: Google LLC (EQHXZ8M8AV)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

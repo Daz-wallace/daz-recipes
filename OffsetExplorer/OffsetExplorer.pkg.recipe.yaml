@@ -1,0 +1,19 @@
+Comment: Create a package to deploy Offset Explorer (formerly Kafka Tool) 
+Identifier: com.github.daz-recipes.pkg.offsetexplorer
+ParentRecipe: com.github.daz-recipes.download.offsetexplorer
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Offset Explorer
+  PKG_ID: com.github.errata-ai.vale
+  
+Process:
+- Processor: AppDmgVersioner
+  Arguments:
+    dmg_path: "%pathname%"
+
+- Processor: AppPkgCreator
+  Arguments:
+    force_pkg_build: false
+    pkg_path: "%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg"
+

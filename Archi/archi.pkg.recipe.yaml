@@ -1,0 +1,19 @@
+Comment: Work out the version number and package the installer for Archi
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.archi
+ParentRecipe: com.github.daz-recipes.download.archi
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Archi
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+    
+Process:
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%pathname%/Archi.app/Contents/Info.plist'
+
+- Processor: AppPkgCreator
+  Arguments:
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg'

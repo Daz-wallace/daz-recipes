@@ -1,0 +1,108 @@
+Comment: Create a package to deploy MacVim.app and create the symlinks
+Identifier: com.github.daz-recipes.pkg.MacVim
+ParentRecipe: com.github.daz-recipes.download.MacVim
+MinimumVersion: '2.3'
+
+Input:
+  NAME: MacVim
+  PKG_ID: org.vim.MacVim
+  
+Process:
+- Processor: AppDmgVersioner
+  Arguments:
+        dmg_path: '%pathname%'
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         Applications: "0755"
+         usr: "0755"
+         usr/local/: "0755"
+         usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%pathname%/MacVim.app'
+    destination_path: '%pkgroot%/Applications/MacVim.app'
+    overwrite: true
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/gview'
+    destination_path: '%pkgroot%/usr/local/bin/gview'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/gvim'
+    destination_path: '%pkgroot%/usr/local/bin/gvim'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/gvimdiff'
+    destination_path: '%pkgroot%/usr/local/bin/gvimdiff'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/gvimtutor'
+    destination_path: '%pkgroot%/usr/local/bin/gvimtutor'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/mview'
+    destination_path: '%pkgroot%/usr/local/bin/mview'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/mvim'
+    destination_path: '%pkgroot%/usr/local/bin/mvim'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/mvimdiff'
+    destination_path: '%pkgroot%/usr/local/bin/mvimdiff'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/mvimtutor'
+    destination_path: '%pkgroot%/usr/local/bin/mvimtutor'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/view'
+    destination_path: '%pkgroot%/usr/local/bin/view'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/vim'
+    destination_path: '%pkgroot%/usr/local/bin/vim'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/vimdiff'
+    destination_path: '%pkgroot%/usr/local/bin/vimdiff'
+
+- Processor: Symlinker
+  Arguments:
+    source_path: '/Applications/MacVim.app/Contents/bin/vimtutor'
+    destination_path: '%pkgroot%/usr/local/bin/vimtutor'
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: admin
+            path: 'Applications'
+            user: root
+          - group: wheel
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'

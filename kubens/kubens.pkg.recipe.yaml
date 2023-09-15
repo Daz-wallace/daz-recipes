@@ -1,0 +1,51 @@
+Comment: Package kubens to deploy to /usr/local/bin/
+    # ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+    # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon via an Override
+Identifier: com.github.daz-recipes.pkg.kubens
+ParentRecipe: com.github.daz-recipes.download.kubens
+MinimumVersion: '2.3'
+
+Input:
+  NAME: kubens
+  PKG_ID: com.github.ahmetb.kubens
+  ARCHITECTURE: "x86_64"
+  # ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+
+  
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/kubens'
+    destination_path: '%pkgroot%/root/usr/local/bin/kubens'
+    overwrite: true
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%-%PKG_ARCH%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"

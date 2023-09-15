@@ -1,0 +1,78 @@
+Comment: Create a package to deploy Flutter to /usr/local/bin/flutter-version, then
+    set a nice symlink from /usr/local/bin/flutter to /usr/local/bin/flutter-version/bin/flutter
+    # ARCHITECTURE should be set to "" for Intel, or "arm64_" for Apple Silicon
+    # PKG_ARCH should be set to "Intel" for intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.FlutterSDK
+ParentRecipe: com.github.daz-recipes.download.FlutterSDK
+MinimumVersion: '2.3'
+
+Input:
+  NAME: flutter
+  PKG_ID: com.github.flutter.fluttersdk
+  ARCHITECTURE: ""
+  # ARCHITECTURE should be set to "" for Intel, or "arm64_" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+      
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true 
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         scripts: "0755"
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/%NAME%'
+    destination_path: '%RECIPE_CACHE_DIR%/%NAME%/root/usr/local/bin/%NAME%-%version%'
+
+- Processor: FileCreator
+  Arguments:
+      file_path: "%pkgroot%/scripts/postinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/zsh
+        
+        # This script will create a symlink to link the flutter binary to
+        # /usr/local/bin/flutter
+        
+        if [[ -a /usr/local/bin/flutter ]]; then
+            /bin/rm /usr/local/bin/flutter
+        fi
+        /bin/ln -s /usr/local/bin/%NAME%-%version%/bin/flutter /usr/local/bin/flutter
+        exit
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr/local/bin/%NAME%-%version%'
+            user: root
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%-%PKG_ARCH%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        scripts: "%RECIPE_CACHE_DIR%/%NAME%/scripts"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/%NAME%'
+      - '%RECIPE_CACHE_DIR%/unpack'

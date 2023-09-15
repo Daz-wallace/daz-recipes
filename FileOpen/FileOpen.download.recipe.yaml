@@ -1,0 +1,27 @@
+Comment: Download FileOpen from https://plugin.fileopen.com/macos12
+Identifier: com.github.daz-recipes.download.FileOpen
+MinimumVersion: '2.3'
+
+Input:
+  NAME: FileOpen
+  CHECK_URL: https://plugin.fileopen.com/macos12
+  SEARCH_TERMS: "/current-mac/FileOpenInstaller-.*..dmg"
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '%SEARCH_TERMS%'
+    url: '%CHECK_URL%'
+
+- Processor: URLDownloader
+  Arguments:
+    url: 'https://plugin.fileopen.com%match%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%/*.pkg'
+    expected_authority_names: 
+      - "Developer ID Installer: FileOpen Systems Inc. (U89NDV68NZ)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

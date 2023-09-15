@@ -1,0 +1,23 @@
+Comment: Download AWSSessionManagerplugin from 
+    https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos-signed
+Identifier: com.github.daz-recipes.download.AWSSessionManagerplugin
+MinimumVersion: '2.3'
+
+Input:
+  NAME: AWS Session Manager plugin
+  DOWNLOAD_URL: https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/session-manager-plugin.pkg
+  
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%RECIPE_CACHE_DIR%/downloads/session-manager-plugin.pkg'
+    expected_authority_names: 
+      - "Developer ID Installer: AMZN Mobile LLC (94KV3E626L)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

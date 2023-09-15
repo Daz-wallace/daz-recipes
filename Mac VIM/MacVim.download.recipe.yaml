@@ -1,0 +1,21 @@
+Comment: Download MacVim from https://github.com/macvim-dev/macvim
+Identifier: com.github.daz-recipes.download.MacVim
+MinimumVersion: '2.3'
+
+Input:
+  NAME: MacVim
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: macvim-dev/macvim
+    asset_regex: "MacVim.dmg"
+
+- Processor: URLDownloader
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: "%pathname%/MacVim.app"
+    requirement: 'identifier "org.vim.MacVim" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = WG3S88DD2E'
+
+- Processor: EndOfCheckPhase

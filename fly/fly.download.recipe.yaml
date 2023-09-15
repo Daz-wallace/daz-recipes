@@ -1,0 +1,16 @@
+Comment: Download fly from https://github.com/concourse/concourse
+Identifier: com.github.daz-recipes.download.fly
+MinimumVersion: '2.3'
+
+Input:
+  NAME: fly
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: concourse/concourse
+    asset_regex: "fly-.*.-darwin-amd64.tgz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

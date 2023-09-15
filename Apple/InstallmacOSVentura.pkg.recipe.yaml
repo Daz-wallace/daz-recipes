@@ -1,0 +1,38 @@
+Comment: Version the macOS Installer App Installer
+Identifier:  com.github.daz-recipes.pkg.InstallmacOSVentura
+ParentRecipe: com.github.daz-recipes.download.InstallmacOSVentura
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Install macOS Ventura
+  VERSION_SEARCH_PATTERN: | 
+        <key>OSVersion</key>
+        			<string>([0-9]+.[0-9]+.*)</string>
+  
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: "%RECIPE_CACHE_DIR%/unpack"
+    flat_pkg_path: '%pathname%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/SharedSupport.dmg/com_apple_MobileAsset_MobileSoftwareUpdate_MacUpdateBrain/com_apple_MobileAsset_MobileSoftwareUpdate_MacUpdateBrain.xml'
+    destination_path: '%RECIPE_CACHE_DIR%/unpack/com_apple_MobileAsset_MobileSoftwareUpdate_MacUpdateBrain.xml'
+    overwrite: true
+
+- Processor: URLTextSearcher
+  Arguments:
+    result_output_var_name: version
+    url: "file:////%RECIPE_CACHE_DIR%/unpack/com_apple_MobileAsset_MobileSoftwareUpdate_MacUpdateBrain.xml"
+    re_pattern: '%VERSION_SEARCH_PATTERN%'
+
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list:
+        - '%RECIPE_CACHE_DIR%/unpack'

@@ -1,0 +1,16 @@
+Comment: Rename nodeJS package to include version number for the latest v17 of Node
+Identifier: com.github.daz-recipes.pkg.nodeJS-17
+ParentRecipe: com.github.daz-recipes.download.nodeJS
+MinimumVersion: '2.3'
+
+Input:
+    NAME: NodeJS
+    DOWNLOAD_URL: https://nodejs.org/dist/latest-v17.x/
+     # Use the DOWNLOAD_URL to point this to different version of NodeJS
+    DOWNLOAD_PATTERN: 'node-v([0-9\.]+).pkg'  
+  
+Process:
+- Processor: PkgCopier
+  Arguments:
+        source_pkg: '%pathname%'
+        pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'

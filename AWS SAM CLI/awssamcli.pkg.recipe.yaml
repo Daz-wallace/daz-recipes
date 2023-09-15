@@ -1,0 +1,16 @@
+Comment: Package AWS SAM CLI from https://github.com/aws/aws-sam-cli
+    # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.AWSSAMCLI
+ParentRecipe: com.github.daz-recipes.download.AWSSAMCLI
+MinimumVersion: '2.3'
+
+Input:
+  NAME: aws-sam-cli
+  PKG_ARCH: Intel
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+ 
+Process:
+- Processor: PkgCopier
+  Arguments:
+        source_pkg: '%pathname%'
+        pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg'

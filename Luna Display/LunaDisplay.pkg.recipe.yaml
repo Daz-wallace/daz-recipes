@@ -1,0 +1,11 @@
+Comment: Create a package to deploy Luna Display
+Identifier: com.github.daz-recipes.pkg.LunaDisplay
+ParentRecipe: com.github.daz-recipes.download.LunaDisplay
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Luna Display
+  
+Process:
+- Processor: AppPkgCreator
+

@@ -1,0 +1,19 @@
+Comment: Download hoverfly from https://github.com/SpectoLabs/hoverfly/
+        #     ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.hoverfly
+MinimumVersion: '2.3'
+
+Input:
+  NAME: hoverfly
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: SpectoLabs/hoverfly
+    asset_regex: "hoverfly_bundle_OSX_%ARCHITECTURE%.zip"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

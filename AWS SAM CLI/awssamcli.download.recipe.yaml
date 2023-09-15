@@ -1,0 +1,28 @@
+Comment: Download AWS SAM CLI from https://github.com/aws/aws-sam-cli
+    # ARCHITECTURE should be set to "x86_64" for intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.AWSSAMCLI
+MinimumVersion: '2.3'
+
+Input:
+  NAME: aws-sam-cli
+  GITHUB_REPO: aws/aws-sam-cli
+  ARCHITECTURE: "x86_64"
+  # ARCHITECTURE should be set to "x86_64" for intel, or "arm64" for Apple Silicon
+  
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: '%GITHUB_REPO%'
+    asset_regex: 'aws-sam-cli-macos-%ARCHITECTURE%.pkg'
+
+- Processor: URLDownloader
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Developer ID Installer: AMZN Mobile LLC (94KV3E626L)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

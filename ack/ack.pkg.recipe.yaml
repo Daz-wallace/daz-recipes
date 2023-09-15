@@ -1,0 +1,48 @@
+Comment: Create a package to deploy ack to /usr/local/bin/ack
+Identifier: com.github.daz-recipes.pkg.ack
+ParentRecipe: com.github.daz-recipes.download.ack
+MinimumVersion: '2.3'
+
+Input:
+  NAME: ack
+  PKG_ID: com.beyondgrep.ack
+  
+Process:
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "-v"
+    version: '%match%'
+    index: 1
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/%NAME%-v%version%'
+    destination_path: '%RECIPE_CACHE_DIR%/%NAME%/root/usr/local/bin/%NAME%'
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: usr
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/%NAME%'

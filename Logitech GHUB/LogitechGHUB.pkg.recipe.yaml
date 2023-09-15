@@ -1,0 +1,57 @@
+Comment: Create a package to deploy LogitechGHUB
+Identifier: com.github.daz-recipes.pkg.LogitechGHUB
+ParentRecipe: com.github.daz-recipes.download.LogitechGHUB
+MinimumVersion: '2.3'
+
+Input:
+  NAME: LogitechGHUB
+  
+Process:
+- Processor: PkgRootCreator
+  Arguments:
+    pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+    pkgdirs: 
+        {}
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/lghub_installer.app'
+    destination_path: '%RECIPE_CACHE_DIR%/Scripts/lghub_installer.app'
+    overwrite: true
+
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%RECIPE_CACHE_DIR%/Scripts/lghub_installer.app/Contents/Info.plist'
+    plist_version_key: 'CFBundleVersion'
+
+- Processor: FileCreator
+  Arguments:
+    file_path: '%RECIPE_CACHE_DIR%/Scripts/postinstall'
+    file_mode: "0755"
+    file_content: |
+        #!/bin/bash
+
+        # Determine working directory
+        install_dir=$(dirname $0)
+
+        # install with no UI
+        "${install_dir}/lghub_installer.app/Contents/MacOS/lghub_installer" --quiet --analytics No
+        
+        exit 0
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request:
+        pkgroot: '%RECIPE_CACHE_DIR%/pkgroot'
+        pkgname: '%NAME%-%version%'
+        pkgtype: flat
+        id: com.logitech.LogitechGHUB
+        version: '%version%'
+        scripts: Scripts
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+        - '%RECIPE_CACHE_DIR%/pkgroot'
+        - '%RECIPE_CACHE_DIR%/Scripts'
+        - '%RECIPE_CACHE_DIR%/unpack'

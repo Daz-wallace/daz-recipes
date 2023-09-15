@@ -1,0 +1,49 @@
+Comment: Package csvq
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+    # ARCHIPKG_ARCHTECTURE should be set to "Intel" for intel, or "ARM" for Apple Silicon  
+Identifier: com.github.daz-recipes.pkg.csvq
+ParentRecipe: com.github.daz-recipes.download.csvq
+MinimumVersion: '2.3'
+
+Input:
+  NAME: csvq
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # ARCHIPKG_ARCHTECTURE should be set to "Intel" for intel, or "ARM" for Apple Silicon  
+  
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/*/csvq'
+    destination_path: '%pkgroot%/root/usr/local/bin/%NAME%'
+    overwrite: true
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "com.github.mithrandie.csvq-%PKG_ARCH%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%-%PKG_ARCH%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"

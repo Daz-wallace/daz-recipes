@@ -1,0 +1,19 @@
+Comment: Extract package for CopyClip2Helper
+Identifier: com.github.daz-recipess.pkg.CopyClip2Helper
+ParentRecipe: com.github.daz-recipes.download.CopyClip2Helper
+MinimumVersion: '2.3'
+
+Input:
+  NAME: "CopyClip 2 Helper"
+
+Process:
+- Processor: AppPkgCreator
+  Arguments:
+        app_path: '%destination_path%/CopyClip 2 Helper.app'
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      -  '%RECIPE_CACHE_DIR%/unpack'
+
+

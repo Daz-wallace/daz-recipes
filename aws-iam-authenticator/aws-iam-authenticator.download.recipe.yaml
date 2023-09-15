@@ -1,0 +1,19 @@
+Comment: Download aws-iam-authenticator from https://github.com/kubernetes-sigs/aws-iam-authenticator
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.aws-iam-authenticator
+MinimumVersion: '2.3'
+
+Input:
+  NAME: aws-iam-authenticator
+  ARCHITECTURE: "arm64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: kubernetes-sigs/aws-iam-authenticator
+    asset_regex: "aws-iam-authenticator_.*._darwin_%ARCHITECTURE%"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

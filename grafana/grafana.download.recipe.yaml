@@ -1,0 +1,19 @@
+Comment: Download grafana from https://grafana.com/grafana/download?platform=mac&edition=oss
+Identifier: com.github.daz-recipes.download.grafana
+MinimumVersion: '2.3'
+
+Input:
+  NAME: grafana
+  DOWNLOAD_URL: https://grafana.com/grafana/download?platform=mac&edition=oss
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '(https://dl.grafana.com/oss/release/grafana-.*.darwin-amd64.tar.gz)"'
+    url: "%DOWNLOAD_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%'
+    
+- Processor: EndOfCheckPhase

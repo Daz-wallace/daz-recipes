@@ -1,0 +1,36 @@
+Comment: Download the Flutter SDK using 
+    https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json
+  # ARCHITECTURE should be set to "" for Intel, or "arm64_" for Apple Silicon
+Identifier: com.github.daz-recipes.download.FlutterSDK
+MinimumVersion: '2.3'
+
+Input:
+  NAME: flutter
+  CHECK_URL: https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json
+  DOWNLOAD_URL: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos
+  ARCHITECTURE: ""
+  # ARCHITECTURE should be set to "" for Intel, or "arm64_" for Apple Silicon
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: flutter_macos_%ARCHITECTURE%[0-9]+.[0-9]+.[0-9]+-stable.zip
+    url: "%CHECK_URL%"
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%/%match%'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "flutter_macos_"
+    version: '%pathname%'
+    index: 1
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "-stable.zip"
+    version: '%version%'
+    index: 0

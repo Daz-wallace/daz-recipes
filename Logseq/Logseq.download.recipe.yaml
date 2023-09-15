@@ -1,0 +1,24 @@
+Comment: Download Logseq from https://github.com/logseq/logseq
+   #  ARCHITECTURE should be set to "x64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.Logseq
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Logseq
+  ARCHITECTURE: "x64"
+  # ARCHITECTURE should be set to "x64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: logseq/logseq
+    asset_regex: "Logseq-darwin-%ARCHITECTURE%-.*..dmg"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%/Logseq.app'
+    requirement: identifier "com.electron.logseq" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "3K44EUN829"

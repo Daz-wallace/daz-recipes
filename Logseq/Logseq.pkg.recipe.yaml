@@ -1,0 +1,18 @@
+Comment: Create a package to deploy Logseq to /Applications
+   # ARCHITECTURE should be set to "x64" for Intel, or "arm64" for Apple Silicon
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+Identifier: com.github.daz-recipes.pkg.Logseq
+ParentRecipe: com.github.daz-recipes.download.Logseq
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Logseq
+  ARCHITECTURE: "x64"
+  # ARCHITECTURE should be set to "x64" for Intel, or "arm64" for Apple Silicon
+  PKG_ARCH: "Intel"
+  # PKG_ARCH should be set to "Intel" for Intel, or "ARM" for Apple Silicon
+  
+Process:
+- Processor: AppPkgCreator
+  Arguments:
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PKG_ARCH%.pkg'

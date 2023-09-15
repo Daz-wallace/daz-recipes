@@ -1,0 +1,39 @@
+Comment: Work out the version number and rename the installer for nr1
+Identifier: com.github.daz-recipes.pkg.nr1
+ParentRecipe: com.github.daz-recipes.download.nr1
+MinimumVersion: '2.3'
+
+Input:
+  NAME: nr1
+  
+Process:
+- Processor: FlatPkgUnpacker
+  Arguments:
+    destination_path: '%RECIPE_CACHE_DIR%/expanded'
+    flat_pkg_path: '%pathname%'
+
+- Processor: com.github.autopkg.novaksam-recipes.Processors/PackageInfoReader
+  Arguments:
+    packageinfo_path: '%RECIPE_CACHE_DIR%/expanded/PackageInfo'
+
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%pkginfo_version%.pkg'
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "nr1-"
+    version: '%pkg_path%'
+    index: 1
+
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: ".pkg"
+    version: '%version%'
+    index: 0
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%RECIPE_CACHE_DIR%/expanded'

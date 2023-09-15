@@ -1,0 +1,19 @@
+Comment: Download k9s from https://github.com/derailed/k9s
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.k9s
+MinimumVersion: '2.3'
+
+Input:
+  NAME: k9s
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: derailed/k9s
+    asset_regex: "k9s_Darwin_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

@@ -1,0 +1,69 @@
+Comment: Create a package for nvim to go to /usr/local/bin/nvim
+Identifier: com.github.daz-recipes.pkg.nvim
+ParentRecipe: com.github.daz-recipes.download.nvim
+MinimumVersion: '2.3'
+
+Input:
+  NAME: nvim
+  PKG_ID: com.github.neovim.neovim.nvim
+  
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true 
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         scripts: "0755"
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/nvim-macos'
+    destination_path: '%pkgroot%/root/usr/local/bin/nvim-macos'
+    overwrite: true
+
+- Processor: FileCreator
+  Arguments:
+      file_path: "%pkgroot%/scripts/postinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/zsh
+
+        # This script will create a symlink to link the nvim binary to
+        # /usr/local/bin/nvim
+        
+        if [[ -a /usr/local/bin/nvim ]]; then
+            /bin/rm /usr/local/bin/nvim
+        fi
+        /bin/ln -s /usr/local/bin/nvim-macos/bin/nvim /usr/local/bin/nvim 
+        
+        exit
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        scripts: "%RECIPE_CACHE_DIR%/%NAME%/scripts"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'
+      -  '%RECIPE_CACHE_DIR%/unpack'

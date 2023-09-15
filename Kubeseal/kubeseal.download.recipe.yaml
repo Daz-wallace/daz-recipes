@@ -1,0 +1,19 @@
+Comment: Download kubeseal from https://github.com/bitnami-labs/sealed-secrets
+    # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.kubeseal
+MinimumVersion: '2.3'
+
+Input:
+  NAME: kubeseal
+  ARCHITECTURE: "amd64"
+  # ARCHITECTURE should be set to "amd64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: bitnami-labs/sealed-secrets
+    asset_regex: "kubeseal-.*.-darwin-%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

@@ -1,0 +1,13 @@
+Comment: Package carthage from https://github.com/Carthage/Carthage
+Identifier: com.github.daz-recipes.pkg.Carthage
+ParentRecipe: com.github.daz-recipes.download.Carthage
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Carthage
+  
+Process:
+- Processor: PkgCopier
+  Arguments:
+        source_pkg: '%pathname%'
+        pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'

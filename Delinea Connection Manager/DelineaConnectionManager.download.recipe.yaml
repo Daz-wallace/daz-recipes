@@ -1,0 +1,22 @@
+Comment: Download Delinea Connection Manager from a static URL
+Identifier: com.github.daz-recipes.download.DelineaConnectionManager
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Delinea Connection Manager
+  DOWNLOAD_URL: https://downloads.cm.thycotic.com/Delinea.ConnectionManager.MacOSInstaller.pkg
+
+Process:
+- Processor: URLDownloader
+  Arguments:
+    url: '%DOWNLOAD_URL%'
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%'
+    expected_authority_names: 
+      - "Developer ID Installer: Thycotic Software (UJDHBB2D6Q)"
+      - "Developer ID Certification Authority"
+      - "Apple Root CA"

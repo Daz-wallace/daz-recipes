@@ -1,0 +1,85 @@
+Comment: Package cfssl and associated binaries from https://github.com/cloudflare/cfssl
+Identifier: com.github.daz-recipes.pkg.cfssl
+ParentRecipe: com.github.daz-recipes.download.cfssl
+MinimumVersion: '2.3'
+
+Input:
+  NAME: cfssl
+  PKG_ID: com.github.cloudflare.cfssl
+  
+Process:
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssl-bundle'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssl-bundle'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssl-certinfo'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssl-certinfo'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssl-newkey'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssl-newkey'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssl-scan'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssl-scan'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssljson'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssljson'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/cfssl'
+    destination_path: '%pkgroot%/root/usr/local/bin/cfssl'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/mkbundle'
+    destination_path: '%pkgroot%/root/usr/local/bin/mkbundle'
+    overwrite: true
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/downloads/multirootca'
+    destination_path: '%pkgroot%/root/usr/local/bin/multirootca'
+    overwrite: true
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'

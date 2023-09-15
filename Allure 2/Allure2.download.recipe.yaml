@@ -1,0 +1,16 @@
+Comment: Download Allure 2 from https://github.com/allure-framework/allure2
+Identifier: com.github.daz-recipes.download.allure2
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Allure 2
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: allure-framework/allure2
+    asset_regex: "allure-2.*.zip"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

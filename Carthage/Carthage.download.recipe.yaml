@@ -1,0 +1,16 @@
+Comment: Download Carthage from https://github.com/Carthage/Carthage
+Identifier: com.github.daz-recipes.download.Carthage
+MinimumVersion: '2.3'
+
+Input:
+  NAME: carthage
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: Carthage/Carthage
+    asset_regex: "Carthage.pkg"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

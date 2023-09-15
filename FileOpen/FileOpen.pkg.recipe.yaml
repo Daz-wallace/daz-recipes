@@ -1,0 +1,25 @@
+Comment: Extract package for FileOpen
+Identifier: com.github.daz-recipes.pkg.FileOpen
+ParentRecipe: com.github.daz-recipes.download.FileOpen
+MinimumVersion: '2.3'
+
+Input:
+  NAME: FileOpen
+
+Process:
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: "FileOpenInstaller-"
+    version: '%pathname%'
+    index: 1
+    
+- Processor: com.github.homebysix.VersionSplitter/VersionSplitter
+  Arguments:
+    split_on: ".dmg"
+    version: '%version%'
+    index: 0
+
+- Processor: PkgCopier
+  Arguments:
+    source_pkg: '%pathname%/*.pkg'
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%.pkg'

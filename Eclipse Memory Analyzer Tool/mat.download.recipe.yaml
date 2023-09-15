@@ -1,0 +1,33 @@
+Comment: Download Eclipse Memory Analyzer Tool (MAT) from https://www.eclipse.org/mat/downloads.php
+        # ARCHITECTURE should be set to "x86_64" for Intel, or "aarch64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.mat
+MinimumVersion: '2.3'
+
+Input:
+  NAME: mat
+  CHECK_URL: https://eclipse.dev/mat/downloads.php
+  ARCHITECTURE: x86_64
+  # ARCHITECTURE should be set to "x86_64" for Intel, or "aarch64" for Apple Silicon
+  SEARCH_TERMS: 'https://www.eclipse.org/downloads/download.php\?file=/mat/[0-9]+.[0-9]+.[0-9]+/rcp/MemoryAnalyzer-[0-9]+.[0-9]+.[0-9]+.[0-9]+-macosx.cocoa.%ARCHITECTURE%.dmg'
+
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    re_pattern: '%SEARCH_TERMS%'
+    url: '%CHECK_URL%'
+
+- Processor: URLDownloader
+  Arguments:
+    url: '%match%&r=1'
+    filename: "%NAME%.dmg"
+
+- Processor: StopProcessingIf
+  Arguments:
+    predicate: 'download_changed == FALSE'
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: "%pathname%/mat.app"
+    requirement: identifier "org.eclipse.mat.ui.rcp.MemoryAnalyzer" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JCDTMS22B4

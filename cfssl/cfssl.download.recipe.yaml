@@ -1,0 +1,83 @@
+Comment: Download cfssl and associated binaries from https://github.com/cloudflare/cfssl,
+    including cfssl-bundle, cfssl-certinfo,  cfssl-newkey, cfssl-scan, cfssljson, cfssl,
+    mkbundle and multirootca
+Identifier: com.github.daz-recipes.download.cfssl
+MinimumVersion: '2.3'
+
+Input:
+  NAME: cfssl
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssl-bundle_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssl-bundle
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssl-certinfo_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssl-certinfo
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssl-newkey_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssl-newkey
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssl-scan_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssl-scan
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssljson_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssljson
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'cfssl_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: cfssl
+    
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'mkbundle_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: mkbundle
+
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: cloudflare/cfssl
+    asset_regex: 'multirootca_[0-9]+.[0-9]+.[0-9]+_darwin_amd64'
+
+- Processor: URLDownloader
+  Arguments:
+    filename: multirootca
+
+- Processor: EndOfCheckPhase

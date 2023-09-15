@@ -1,0 +1,19 @@
+Comment: Download kubens from https://github.com/ahmetb/kubectx
+    # ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+Identifier: com.github.daz-recipes.download.kubens
+MinimumVersion: '2.3'
+
+Input:
+  NAME: kubens
+  ARCHITECTURE: "x86_64"
+  # ARCHITECTURE should be set to "x86_64" for Intel, or "arm64" for Apple Silicon
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: ahmetb/kubectx
+    asset_regex: "kubens_v.*._darwin_%ARCHITECTURE%.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

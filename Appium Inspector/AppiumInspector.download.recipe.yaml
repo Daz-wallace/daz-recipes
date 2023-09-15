@@ -1,0 +1,23 @@
+Comment: Download Appium Inspector from https://github.com/appium/appium-inspector
+Identifier: com.github.daz-recipes.download.AppiumInspector
+MinimumVersion: '2.3'
+
+Input:
+  NAME: Appium Inspector
+  GITHUB_REPO: appium/appium-inspector
+  
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: '%GITHUB_REPO%'
+    asset_regex: 'Appium-Inspector-mac-.*..dmg'
+
+- Processor: URLDownloader
+    
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%/Appium Inspector.app'
+    requirement: 'identifier "io.appium.inspector" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = UY52UFTVTM'
+    

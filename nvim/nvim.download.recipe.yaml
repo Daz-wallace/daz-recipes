@@ -1,0 +1,16 @@
+Comment: Download nvim from https://github.com/neovim/neovim
+Identifier: com.github.daz-recipes.download.nvim
+MinimumVersion: '2.3'
+
+Input:
+  NAME: nvim
+
+Process:
+- Processor: GitHubReleasesInfoProvider
+  Arguments:
+    github_repo: neovim/neovim
+    asset_regex: "nvim-macos.tar.gz"
+
+- Processor: URLDownloader
+
+- Processor: EndOfCheckPhase

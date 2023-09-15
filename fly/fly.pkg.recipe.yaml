@@ -1,0 +1,50 @@
+Comment: Create a package to deploy fly to /usr/local/bin/fly
+Identifier: com.github.daz-recipess.pkg.fly
+ParentRecipe: com.github.daz-recipes.download.fly
+MinimumVersion: '2.3'
+
+Input:
+  NAME: fly
+  PKG_ID: com.github.concourse.fly
+  
+Process:
+- Processor: Unarchiver
+  Arguments:
+        archive_path: '%pathname%'
+        destination_path: '%RECIPE_CACHE_DIR%/unpack'
+        purge_destination: true 
+
+- Processor: PkgRootCreator
+  Arguments:
+    pkgdirs: 
+         root: "0755"
+         root/usr: "0755"
+         root/usr/local/: "0755"
+         root/usr/local/bin/: "0755" 
+    pkgroot: '%RECIPE_CACHE_DIR%/%NAME%'
+
+- Processor: Copier
+  Arguments:
+    source_path: '%RECIPE_CACHE_DIR%/unpack/%NAME%'
+    destination_path: '%pkgroot%/root/usr/local/bin/%NAME%'
+    overwrite: true
+
+- Processor: PkgCreator
+  Arguments:
+    pkg_request: 
+        chown:
+          - group: wheel
+            mode: "0755"
+            path: 'usr'
+            user: root
+        id: "%PKG_ID%"
+        options: purge_ds_store
+        pkgname: "%NAME%-%version%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%/root"
+        version: "%version%"
+
+- Processor: PathDeleter
+  Arguments:
+    path_list: 
+      - '%pkgroot%'
+      -  '%RECIPE_CACHE_DIR%/unpack'
