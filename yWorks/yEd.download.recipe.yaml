@@ -1,0 +1,29 @@
+Description: Download recipe for yWorks yEd Graph Editor.
+	Taken over from https://github.com/autopkg/48kRAM-recipes/tree/master/yWorks
+Identifier: com.github.daz-recipes.autopkg.download.yed
+MinimumVersion: '2.3'
+
+Input:
+  NAME: yEd
+  DOWNLOAD_ARCH: amd64
+  # DOWNLOAD_ARCH should be set to "arm64" (for Apple Silicon) or "amd64" (for Intel)
+  
+Process:
+- Processor: URLTextSearcher
+  Arguments:
+    url: 'https://www.yworks.com/downloads'
+    re_pattern: '\/resources\/yed\/demo\/yEd-[0-9\.]+_with-JRE[0-9][0-9]+\_%DOWNLOAD_ARCH%.dmg'
+    result_output_var_name: 'url_path'
+
+- Processor: URLDownloader
+  Arguments:
+    url: 'https://www.yworks.com/%url_path'
+    filename: '%NAME%.dmg'
+
+
+- Processor: EndOfCheckPhase
+
+- Processor: CodeSignatureVerifier
+  Arguments:
+    input_path: '%pathname%/yEd.app'
+    requirement: 'identifier "com.yworks.yEd" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = JD89S887M2'
