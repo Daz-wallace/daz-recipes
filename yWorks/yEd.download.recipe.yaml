@@ -1,5 +1,5 @@
 Description: Download recipe for yWorks yEd Graph Editor.
-	Taken over from https://github.com/autopkg/48kRAM-recipes/tree/master/yWorks
+  Taken over from https://github.com/autopkg/48kRAM-recipes/tree/master/yWorks
 Identifier: com.github.daz-recipes.autopkg.download.yed
 MinimumVersion: '2.3'
 
