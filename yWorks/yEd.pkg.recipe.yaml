@@ -1,0 +1,21 @@
+Description: Package recipe for yWorks yEd Graph Editor.
+Identifier: com.github.daz-recipes.autopkg.pkg.yed
+ParentRecipe: com.github.daz-recipes.autopkg.download.yed
+MinimumVersion: '2.3'
+
+Input:
+  NAME: yEd
+  DOWNLOAD_ARCH: amd64
+  # DOWNLOAD_ARCH should be set to "arm64" (for Apple Silicon) or "amd64" (for Intel)
+  PACKAGE_ARCH: Intel
+  # PACKAGE_ARCH should be set to "ARM" (for Apple Silicon) or "Intel" (for Intel) - or your own preference 
+ 
+  
+Process:
+- Processor: Versioner
+  Arguments:
+    input_plist_path: '%pathname%/yEd.app/Contents/Info.plist'
+    
+- Processor: AppPkgCreator
+  Arguments:
+    pkg_path: '%RECIPE_CACHE_DIR%/%NAME%-%version%-%PACKAGE_ARCH%.pkg'
