@@ -17,7 +17,7 @@ Process:
 
 - Processor: URLDownloader
   Arguments:
-    url: 'https://www.yworks.com/%url_path'
+    url: 'https://www.yworks.com/%url_path%'
     filename: '%NAME%.dmg'
 
 
